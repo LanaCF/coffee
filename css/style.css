@@ -1,0 +1,34 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* width: 100vw; */
+  margin: 0 auto;
+  background-color: rgb(20, 12, 2);
+}
+
+.header-img {
+  width: 1470px;
+  margin: 15px;
+  box-shadow: 0 10px 10px rgba(223, 223, 169, 0.4);
+  opacity: 0.5;
+}
+
+.main {
+  width: 1370px;
+  margin: 0 auto;
+}
+
+.coffeemachine-block {
+  width: 100%;
+  height: 470px;
+  margin: 55px auto;
+  background-color: rgb(239, 210, 166);
+  border-radius: 15px;
+}
