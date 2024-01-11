@@ -1,13 +1,29 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.red {
+  color: red;
 }
 
 .container {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   /* width: 100vw; */
   margin: 0 auto;
   background-color: rgb(20, 12, 2);
@@ -16,8 +32,8 @@
 .header-img {
   width: 1470px;
   margin: 15px;
-  box-shadow: 0 10px 10px rgba(223, 223, 169, 0.4);
-  opacity: 0.5;
+  -webkit-box-shadow: 0 10px 10px rgba(223, 223, 169, 0.4);
+          box-shadow: 0 10px 10px rgba(223, 223, 169, 0.4);
 }
 
 .main {
@@ -26,9 +42,274 @@
 }
 
 .coffeemachine-block {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   width: 100%;
-  height: 470px;
+  height: 670px;
   margin: 55px auto;
+  padding: 35px;
   background-color: rgb(239, 210, 166);
   border-radius: 15px;
 }
+.coffeemachine-block__machine-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.coffeemachine-block__machine_img {
+  width: 270px;
+}
+
+.coffeemachine-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.coffeemachine-button__button_box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.coffeemachine-button__button_item {
+  padding: 10px 25px;
+  margin: 0 15px;
+  color: white;
+  font-weight: bold;
+  font-size: 17px;
+  border: 3px solid rgba(27, 19, 19, 0.3);
+  border-radius: 5px;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+.coffeemachine-button__button_item:hover {
+  cursor: pointer;
+  -webkit-transform: scale(1.1);
+      -ms-transform: scale(1.1);
+          transform: scale(1.1);
+}
+.coffeemachine-button__info-on-off {
+  margin: 15px;
+}
+.coffeemachine-button__info-on-off_text {
+  font-weight: bold;
+  font-size: 21px;
+  color: brown;
+}
+
+.button_on {
+  background-color: green;
+}
+
+.button_off {
+  background-color: red;
+}
+
+.coffeemachine-info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 270px;
+  height: 100%;
+  margin-top: 25px;
+  background-color: white;
+  border-radius: 5px;
+  padding: 17px;
+  overflow: hidden;
+}
+.coffeemachine-info__box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.coffeemachine-info__text {
+  font-size: 17px;
+  margin: 5px;
+}
+
+.coffeemachine-water {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  width: 70px;
+  margin: 0 25px;
+  border-radius: 5px;
+  background-color: white;
+}
+.coffeemachine-water__water {
+  width: 70px;
+  height: 400px;
+  background-color: rgb(49, 158, 212);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.coffeemachine-water__volume {
+  width: 70px;
+}
+.coffeemachine-water__volume-allowed {
+  height: 200px;
+  border-top: 3px solid rgb(49, 158, 212);
+}
+.coffeemachine-water__volume-allowed-liter {
+  height: 100px;
+  border-top: 3px solid rgb(49, 158, 212);
+}
+.coffeemachine-water__volume-warning {
+  height: 100px;
+  border-top: 5px solid red;
+}
+.coffeemachine-water__liter {
+  font-weight: bold;
+  font-size: 21px;
+}
+.coffeemachine-water__liter-warning {
+  width: 200px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.coffeemachine-selection-preparation-coffee {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  width: 750px;
+  margin-left: auto;
+}
+
+.coffeemachine-selection-coffee {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 55px;
+  background-color: rgb(247, 227, 196);
+  border-radius: 5px;
+}
+.coffeemachine-selection-coffee__type-coffee {
+  margin: 15px;
+  padding: 15px;
+  font-size: 25px;
+  color: rgb(248, 206, 158);
+  border-radius: 10px;
+  border: 3px solid rgb(146, 77, 8);
+  background-color: rgb(95, 50, 18);
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+.coffeemachine-selection-coffee__type-coffee:hover {
+  cursor: pointer;
+  -webkit-transform: scale(1.1);
+      -ms-transform: scale(1.1);
+          transform: scale(1.1);
+}
+
+.coffeemachine-preparation-coffee {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 750px;
+  height: 100%;
+}
+.coffeemachine-preparation-coffee__box-time {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 50%;
+}
+.coffeemachine-preparation-coffee__timer {
+  width: 100%;
+  height: 100px;
+  margin: 25px 0;
+  border-radius: 5px;
+  background-color: white;
+}
+.coffeemachine-preparation-coffee__countdown {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 100%;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 55px;
+  font-weight: bold;
+}
+.coffeemachine-preparation-coffee__message-coffee-prepared {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 100%;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.coffeemachine-preparation-coffee__message-done {
+  font-size: 35px;
+  font-weight: bold;
+  text-align: center;
+  color: brown;
+}
+.coffeemachine-preparation-coffee__done-cup {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: end;
+  width: 350px;
+  height: 300px;
+}
+.coffeemachine-preparation-coffee__done-cup-img {
+  width: 350px;
+}/*# sourceMappingURL=style.css.map */
