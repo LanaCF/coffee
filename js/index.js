@@ -1,7 +1,9 @@
 const doc = document;
+const waterArr = [];
+let id = 0;
 
 class CoffeeMachine {
-  // _on = false;
+  _on = false;
 
   renderCoffeeMachine() {
     const parent = doc.querySelector('.main');
@@ -110,9 +112,7 @@ class CoffeeMachine {
               </div>
 
               <div class="coffeemachine-preparation-coffee__message-coffee-prepared">
-                <p class="coffeemachine-preparation-coffee__message-done">
-                  Done! <br> Delicious!
-                </p>
+                <p class="coffeemachine-preparation-coffee__message-done"></p>
               </div>
             </div>
 
@@ -135,6 +135,13 @@ class CoffeeMachine {
     this.brand = brand;
     this.coffeeTypes = coffeeTypes;
     this.waterVolume = waterVolume;
+    this.id = id++;
+
+    if (waterVolume) {
+      this.waterVolumeH = (this.waterVolume * 200);
+      localStorage.setItem(`${ this.id }`, this.waterVolumeH);
+      console.log(this.id, ' ', this.waterVolumeH);
+    }
 
     this.renderCoffeeMachine();
     this.renderTypeCoffee();
@@ -158,27 +165,28 @@ class CoffeeMachine {
     }
   }
 
-  makeCoffee() {
-    const typeCoffeeButtons = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
-    const water = this._element.querySelector('.coffeemachine-water__water');
+  on() {
+    this._on = true;
+    console.log('-= ON =-');
+    this.makeCoffee();
+  }
 
-    let localStorageWaterVolume = localStorage.getItem('waterVolume');
+  off() {
+    this._on = false;
+    this._element.querySelector('.coffeemachine-water__water').style.height = 0;
+    const buttonTextOff = this._element.querySelector('.coffeemachine-button__info-on-off_text');
+    buttonTextOff.innerHTML = 'Machine OFF';
+    buttonTextOff.style.color = 'red';
+    console.log('-= OFF =-');
+  }
 
-    // Якщо дані відсутні або невірні, встановлюємо значення за замовчуванням
-    if (!localStorageWaterVolume || isNaN(parseFloat(localStorageWaterVolume))) {
-      localStorageWaterVolume = this.localStorageWaterVolume;
-    }
-
-    water.style.height = this.waterVolume * 200 + 'px';
-    console.log(water.style.height);
-  
-    for (let button of typeCoffeeButtons) {
-      button.addEventListener('click', () => {
-        water.style.height = `${ this.waterVolume * 200 - 100 }px `;
-      });
-    }
-
-    localStorage.setItem('waterVolume', localStorageWaterVolume);
+  checkOn() {
+    /*if (!this._on) {
+      console.log('Coffee Machine is OFF !!!');
+    } else {
+      console.log('Coffee Machine is ON !!!');
+    }*/
+    return this._on;
   }
 
   buttonOnOff() {
@@ -190,15 +198,18 @@ class CoffeeMachine {
     buttonOn.onclick = () => {
       buttonText.innerHTML = 'Machine ON';
       buttonText.style.color = 'green';
+      
 
       for (let item of buttonCoffee) {
         item.disabled = false;
         item.style.opacity = 1;
         item.style.cursor = 'pointer';
       }
+      this.on();  
     };
   
     buttonOff.onclick = () => {
+      this.off();
       buttonText.innerHTML = 'Machine OFF';
       buttonText.style.color = 'red';
 
@@ -210,11 +221,92 @@ class CoffeeMachine {
     };
   }
 
-  
+  makeCoffee() {
+    const typeCoffeeButtons = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
+    const water = this._element.querySelector('.coffeemachine-water__water');
+    const infoMakingCoffee = this._element.querySelector('.coffeemachine-preparation-coffee__message-done');
+
+    if (!this.checkOn()) {
+      console.log('Не можливо зробити каву, немає живлення! Coffee Machine is OFF !!!');
+      return this.checkOn();
+    }
+
+    if (this.coffeeTypes.length === 0) {
+      console.log(`Помилка`);
+      this.off();
+      return;
+    } else {
+      console.log(`Параметри кнопок вибору кави`, this.coffeeTypes);
+    }
+    
+
+    let localStorageWaterVolume = localStorage.getItem('${ this.id }');
+
+    // Якщо дані відсутні або невірні, встановлюємо значення за замовчуванням
+    /*if (!localStorageWaterVolume || isNaN(parseFloat(localStorageWaterVolume))) {
+      localStorageWaterVolume = this.localStorageWaterVolume;
+    }*/
+    if (localStorageWaterVolume != null) {
+      console.log('localStorageWaterVolume: ', localStorageWaterVolume);
+    }
+
+    water.style.height = this.waterVolume * 200 + 'px';
+    console.log(water.style.height);
+
+    function resultMakeCoffe() {
+      const resultMakeCoffeText = 'Ваша кава готова';
+      infoMakingCoffee.innerHTML = resultMakeCoffeText;
+    }
+
+    function countdown(valueT) {
+      // Визначаємо початкову дату і час.
+      const startDate = new Date();
+      startDate.setHours(0, 0, 0);
+      startDate.setSeconds(0);
+      // Визначаємо кінцеву дату і час.
+      const endDate = new Date();
+      endDate.setHours(0, 0, 0);
+      endDate.setSeconds(valueT);
+    console.log("endDate", endDate);
+      // Розраховуємо різницю між початковою і кінцевою датами і часами.
+      let difference = endDate - startDate;
+      //const difference = valueT*1000;
+      console.log("difference", difference);
+      // Запуск циклу.
+      setInterval(() => {
+        // Зменшуємо різницю на одиницю.
+        difference -= 1000;
+    
+        // В кінці циклу виводимо повідомлення.
+        console.log(difference / 1000);
+    
+        // Якщо різниця дорівнює 0, то зупиняємо цикл.
+        if (difference <= 0) {
+          clearInterval(interval);
+          console.log("Час вичерпався!");
+        }
+      }, 1000);
+    }
+
+    for (let button of typeCoffeeButtons) {
+      button.addEventListener('click', () => {
+        water.style.height = `${ this.waterVolume * 200 - 100 }px `;
+        infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared.'
+        countdown(7);
+        setTimeout(resultMakeCoffe, 7000);
+      });
+    }
+
+    
+
+
+    //localStorage.setItem('waterVolume', localStorageWaterVolume);
+  }
 }
 
 const coffeeMach1 = new CoffeeMachine('Philips', ['Espresso', 'Double Espresso', 'Macchiato', 'Latte', 'Americano'], 3);
 const coffeeMach2 = new CoffeeMachine('Samsung', ['Macchiato', 'Latte', 'Espresso'], 2);
+const coffeeMach3 = new CoffeeMachine('Samsung', [], 2);
 
 
 const saveLocalStorage = (products, maxId) => {
