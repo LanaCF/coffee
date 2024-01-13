@@ -92,6 +92,10 @@ class CoffeeMachine {
               <p class="coffeemachine-water__liter red">
                 0.5L
               </p>
+        
+              <button class="coffeemachine-water__add-water">
+                Add water
+              </button>
             </div>
           </div>
         </div>
@@ -309,7 +313,7 @@ class CoffeeMachine {
           countdown(7, document.getElementById('#'+this.id));
           //setTimeout(resultMakeCoffe, 7000);
           if (lastWaterVolumeH == 100){
-            infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared.<br>The water is running out! Add water.';
+            infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared. <br> The water is running out! Add water.';
               const buttonCoffee = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
               for (let item of buttonCoffee) {
                 item.disabled = true;
@@ -388,10 +392,6 @@ class CoffeeMachine {
         }
       });
     }*/
-
-    
-
-    //localStorage.setItem('waterVolume', localStorageWaterVolume);
   }
 }
 
@@ -401,11 +401,3 @@ const coffeeMach3 = new CoffeeMachine('Samsung', [], 2);
 const coffeeMach4 = new CoffeeMachine('Simens', ['Espresso', 'Double Espresso'], 1);
 
 
-const saveLocalStorage = (products, maxId) => {
-  localStorage.setItem('maxProductId', maxProduct.id);
-};
-
-const getsaveLocalStorageAdmin = () => {
-  const getData = localStorage.getItem('products');
-  return;
-};
