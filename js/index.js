@@ -135,6 +135,7 @@ class CoffeeMachine {
     this.brand = brand;
     this.coffeeTypes = coffeeTypes;
     this.waterVolume = waterVolume;
+    
     this.id = id++;
 
     if (waterVolume) {
@@ -151,6 +152,7 @@ class CoffeeMachine {
     this.renderTypeCoffee();
     this.buttonOnOff();
     this.makeCoffee();
+    this.btnAddWaterOff();
   }
 
   renderTypeCoffee() {
@@ -193,6 +195,20 @@ class CoffeeMachine {
     return this._on;
   }
 
+  btnAddWaterOff() {
+    const buttonAddWater = this._element.querySelector('.coffeemachine-water__add-water');
+
+    if (!this._on) {
+      buttonAddWater.disabled = true;
+      buttonAddWater.style.opacity = 0.5;
+      buttonAddWater.style.cursor = 'not-allowed';
+    } else {
+      buttonAddWater.disabled = false;
+      buttonAddWater.style.opacity = 1;
+      buttonAddWater.style.cursor = 'pointer';
+    }
+  }
+
   buttonOnOff() {
     const buttonOn = this._element.querySelector('.button_on');
     const buttonOff = this._element.querySelector('.button_off');
@@ -203,7 +219,6 @@ class CoffeeMachine {
     buttonOn.onclick = () => {
       buttonText.innerHTML = 'Machine ON';
       buttonText.style.color = 'green';
-      
 
       for (let item of buttonCoffee) {
         item.disabled = false;
@@ -211,6 +226,7 @@ class CoffeeMachine {
         item.style.cursor = 'pointer';
       }
       this.on();  
+      this.btnAddWaterOff();
     };
   
     buttonOff.onclick = () => {
@@ -225,6 +241,7 @@ class CoffeeMachine {
       }
 
       infoMakingCoffee.innerHTML = '';
+      this.btnAddWaterOff();
     };
   }
 
@@ -261,8 +278,6 @@ class CoffeeMachine {
       water.style.height = this.waterVolume * 200 + 'px';
       console.log(water.style.height);
     }
-
-    
 
     function resultMakeCoffe() {
       const resultMakeCoffeText = 'Your coffee. Delicious!';
@@ -318,8 +333,7 @@ class CoffeeMachine {
     
         if (remainingTime < 0) {
           clearInterval(countdownInterval);
-          // Викликайте функцію, яку ви хочете виконати після завершення відліку
-          // Наприклад: callbackFunction();
+          // Функція після завершення відліку
           resultMakeCoffe();
         }
       }, 1000);
@@ -329,6 +343,7 @@ class CoffeeMachine {
     }
     
     const countdownElement = document.getElementById(this.id);
+
     for (let button of typeCoffeeButtons) {
       button.addEventListener('click', () => {
         let lastWaterVolumeH = this.waterVolumeH - 100;
