@@ -92,10 +92,6 @@ class CoffeeMachine {
               <p class="coffeemachine-water__liter red">
                 0.5L
               </p>
-
-              <p class="coffeemachine-water__liter-warning red">
-                The water is running out! <br> Add water.
-              </p>
             </div>
           </div>
         </div>
@@ -106,7 +102,7 @@ class CoffeeMachine {
           <div class="coffeemachine-preparation-coffee">
             <div class="coffeemachine-preparation-coffee__box-time">
               <div class="coffeemachine-preparation-coffee__timer">
-                <p class="coffeemachine-preparation-coffee__countdown">
+                <p id="${ this.id }" class="coffeemachine-preparation-coffee__countdown">
                   00:07
                 </p>
               </div>
@@ -139,7 +135,11 @@ class CoffeeMachine {
 
     if (waterVolume) {
       this.waterVolumeH = (this.waterVolume * 200);
-      localStorage.setItem(`${ this.id }`, this.waterVolumeH);
+      if (localStorage.getItem(this.id) == null) {
+        localStorage.setItem(this.id, this.waterVolumeH);
+      } else {
+        this.waterVolumeH = localStorage.getItem(this.id);
+      }
       console.log(this.id, ' ', this.waterVolumeH);
     }
 
@@ -225,6 +225,7 @@ class CoffeeMachine {
     const typeCoffeeButtons = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
     const water = this._element.querySelector('.coffeemachine-water__water');
     const infoMakingCoffee = this._element.querySelector('.coffeemachine-preparation-coffee__message-done');
+    const infoAddWater = this._element.querySelector ('.coffeemachine-water__volume-warning');
 
     if (!this.checkOn()) {
       console.log('Не можливо зробити каву, немає живлення! Coffee Machine is OFF !!!');
@@ -240,7 +241,7 @@ class CoffeeMachine {
     }
     
 
-    let localStorageWaterVolume = localStorage.getItem('${ this.id }');
+    let localStorageWaterVolume = localStorage.getItem(this.id);
 
     // Якщо дані відсутні або невірні, встановлюємо значення за замовчуванням
     /*if (!localStorageWaterVolume || isNaN(parseFloat(localStorageWaterVolume))) {
@@ -248,17 +249,22 @@ class CoffeeMachine {
     }*/
     if (localStorageWaterVolume != null) {
       console.log('localStorageWaterVolume: ', localStorageWaterVolume);
+      water.style.height = localStorageWaterVolume + 'px';
+    } else {
+      water.style.height = this.waterVolume * 200 + 'px';
+      console.log(water.style.height);
     }
 
-    water.style.height = this.waterVolume * 200 + 'px';
-    console.log(water.style.height);
+    
 
     function resultMakeCoffe() {
       const resultMakeCoffeText = 'Ваша кава готова';
       infoMakingCoffee.innerHTML = resultMakeCoffeText;
     }
 
-    function countdown(valueT) {
+    function countdown(valueT, docElement) {
+      //const countBack = thiselem.querySelectorAll('${ this.id }');
+      const countBack = docElement;
       // Визначаємо початкову дату і час.
       const startDate = new Date();
       startDate.setHours(0, 0, 0);
@@ -267,22 +273,24 @@ class CoffeeMachine {
       const endDate = new Date();
       endDate.setHours(0, 0, 0);
       endDate.setSeconds(valueT);
-    console.log("endDate", endDate);
+      //console.log("endDate", endDate);
       // Розраховуємо різницю між початковою і кінцевою датами і часами.
       let difference = endDate - startDate;
       //const difference = valueT*1000;
-      console.log("difference", difference);
+      console.log("difference", difference / 1000);
       // Запуск циклу.
-      setInterval(() => {
+      let interval = setInterval(() => {
         // Зменшуємо різницю на одиницю.
         difference -= 1000;
+        //countBack.innerHTML = '00:0'+(difference / 1000);
     
         // В кінці циклу виводимо повідомлення.
         console.log(difference / 1000);
-    
+        console.log(countBack);
         // Якщо різниця дорівнює 0, то зупиняємо цикл.
         if (difference <= 0) {
           clearInterval(interval);
+          resultMakeCoffe();
           console.log("Час вичерпався!");
         }
       }, 1000);
@@ -290,15 +298,98 @@ class CoffeeMachine {
 
     for (let button of typeCoffeeButtons) {
       button.addEventListener('click', () => {
-        water.style.height = `${ this.waterVolume * 200 - 100 }px `;
-        infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared.'
-        countdown(7);
-        setTimeout(resultMakeCoffe, 7000);
+        let lastWaterVolumeH = this.waterVolumeH - 100;
+        if (lastWaterVolumeH >= 100) {
+          water.style.height = `${ lastWaterVolumeH }px `;
+          if (localStorageWaterVolume >= lastWaterVolumeH) {
+            localStorage.setItem(`${ this.id }`, lastWaterVolumeH);
+            this.waterVolumeH = lastWaterVolumeH;
+          }
+          infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared.'
+          countdown(7, document.getElementById('#'+this.id));
+          //setTimeout(resultMakeCoffe, 7000);
+          if (lastWaterVolumeH == 100){
+            infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared.<br>The water is running out! Add water.';
+              const buttonCoffee = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
+              for (let item of buttonCoffee) {
+                item.disabled = true;
+                item.style.opacity = 0.5;
+                item.style.cursor = 'not-allowed';
+              }
+    
+              infoAddWater.innerHTML =
+              `<p class="coffeemachine-water__liter red">
+                0.5L
+              </p>
+            
+              <button class="coffeemachine-water__add-water">
+                  Add water
+              </button>`;
+          }
+        } else {
+            infoMakingCoffee.innerHTML = 'The water is running out! Add water.'
+            return;
+        }
+        
+        const buttonAddWater = this._element.querySelector('.coffeemachine-water__add-water');
+
+        buttonAddWater.onclick = () => {
+          const buttonCoffee = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
+          water.style.height = this.waterVolume * 200 + 'px';
+          localStorage.setItem(`${ this.id }`, this.waterVolume * 200);
+          this.waterVolumeH = this.waterVolume * 200;
+
+          for (let item of buttonCoffee) {
+            item.disabled = false;
+            item.style.opacity = 1;
+            item.style.cursor = 'pointer';
+          }
+          localStorageWaterVolume = localStorage.getItem(this.id);
+        }
+        localStorageWaterVolume = localStorage.getItem(this.id);
+        console.log('localStorageWaterVolume: ', localStorageWaterVolume);
       });
     }
 
-    
+    /*for (let button of typeCoffeeButtons) {
+      button.addEventListener('click', () => {
+        water.style.height = `${ this.waterVolume * 200 - 100 }px `;
+        infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared.'
+        countdown(7, document.getElementById('#'+this.id));
+        setTimeout(resultMakeCoffe, 7000);
 
+        if (water.style.height === '100px') {
+          const buttonCoffee = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
+
+          for (let item of buttonCoffee) {
+            item.disabled = true;
+            item.style.opacity = 0.5;
+            item.style.cursor = 'not-allowed';
+          }
+
+          infoAddWater.innerHTML =
+          `<p class="coffeemachine-water__liter red">
+            0.5L
+          </p>
+        
+          <p class="coffeemachine-water__liter-warning red">
+          The water is running out! <br> Add water.
+          </p>
+          
+          <button class="coffeemachine-water__add-water">
+              Add water
+          </button>`;
+        }
+
+        const buttonAddWater = this._element.querySelector('.coffeemachine-water__add-water');
+
+        buttonAddWater.onclick = () => {
+          water.style.height = this.waterVolume * 200 + 'px';
+        }
+      });
+    }*/
+
+    
 
     //localStorage.setItem('waterVolume', localStorageWaterVolume);
   }
@@ -307,6 +398,7 @@ class CoffeeMachine {
 const coffeeMach1 = new CoffeeMachine('Philips', ['Espresso', 'Double Espresso', 'Macchiato', 'Latte', 'Americano'], 3);
 const coffeeMach2 = new CoffeeMachine('Samsung', ['Macchiato', 'Latte', 'Espresso'], 2);
 const coffeeMach3 = new CoffeeMachine('Samsung', [], 2);
+const coffeeMach4 = new CoffeeMachine('Simens', ['Espresso', 'Double Espresso'], 1);
 
 
 const saveLocalStorage = (products, maxId) => {

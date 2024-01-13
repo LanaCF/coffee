@@ -193,6 +193,22 @@
   font-size: 15px;
   font-weight: bold;
 }
+.coffeemachine-water__add-water {
+  width: 150px;
+  color: white;
+  font-size: 17px;
+  padding: 5px 5px;
+  margin-left: 3px;
+  border: 3px solid rgb(66, 66, 179);
+  border-radius: 5px;
+  background-color: rgb(104, 104, 232);
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+.coffeemachine-water__add-water:hover {
+  cursor: pointer;
+  background-color: rgb(143, 143, 255);
+}
 
 .coffeemachine-selection-preparation-coffee {
   display: -webkit-box;
