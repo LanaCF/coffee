@@ -1,10 +1,9 @@
-const doc = document;
+п»їconst doc = document;
 const waterArr = [];
 let id = 0;
 
 class CoffeeMachine {
   _on = false;
-  countStart = 0;
 
   renderCoffeeMachine() {
     const parent = doc.querySelector('.main');
@@ -144,15 +143,9 @@ class CoffeeMachine {
       if (localStorage.getItem(this.id) == null) {
         localStorage.setItem(this.id, this.waterVolumeH);
       } else {
-		const lsID = localStorage.getItem(this.id);
-		this.waterVolumeH = lsID;
-		if (lsID == 100) {
-			this.btnWater = true;
-		} else {
-			this.btnWater = false;
-		}
+        this.waterVolumeH = localStorage.getItem(this.id);
       }
-      console.log(this.id, ' waterVolumeH:', this.waterVolumeH);
+      console.log(this.id, ' ', this.waterVolumeH);
     }
 
     this.renderCoffeeMachine();
@@ -181,16 +174,11 @@ class CoffeeMachine {
   on() {
     this._on = true;
     console.log('-= ON =-');
-	this.btnAddWaterOff(true);   
-	if (this.countStart >= 0) {
-		this.makeCoffee();
-		this.countStart++;
-	}
+    this.makeCoffee();
   }
 
   off() {
     this._on = false;
-	  this.btnAddWaterOff(false);
     this._element.querySelector('.coffeemachine-water__water').style.height = 0;
     const buttonTextOff = this._element.querySelector('.coffeemachine-button__info-on-off_text');
     buttonTextOff.innerHTML = 'Machine OFF';
@@ -206,33 +194,18 @@ class CoffeeMachine {
     }*/
     return this._on;
   }
-  
-  checkStateWater() { //РџРµСЂРµРІС–СЂРєР° СЂС–РІРЅСЏ РІРѕРґРё РІ Р±Р°РєСѓ. РќРµ РІРёРєРѕСЂРёСЃС‚РѕРІСѓС”С‚СЊСЃСЏ
-	const lsID = localStorage.getItem(this.id);
-	if (lsID == 100) { // || lsID == this.waterVolumeH
-		return false;
-	} else {
-		return true;
-	}
-  }
 
-  btnAddWaterOff(state) {
+  btnAddWaterOff() {
     const buttonAddWater = this._element.querySelector('.coffeemachine-water__add-water');
-    if (!this._on || !state) {
-		this.btnWater = state;
-		buttonAddWater.disabled = true;
-		buttonAddWater.style.opacity = 0.5;
-		buttonAddWater.style.cursor = 'not-allowed';
-	} else if (this._on && !state) {
-		this.btnWater = state;
-		buttonAddWater.disabled = true;
-		buttonAddWater.style.opacity = 0.5;
-		buttonAddWater.style.cursor = 'not-allowed';
-	} else {
-		this.btnWater = state;
-		buttonAddWater.disabled = false;
-		buttonAddWater.style.opacity = 1;
-		buttonAddWater.style.cursor = 'pointer';
+
+    if (!this._on) {
+      buttonAddWater.disabled = true;
+      buttonAddWater.style.opacity = 0.5;
+      buttonAddWater.style.cursor = 'not-allowed';
+    } else {
+      buttonAddWater.disabled = false;
+      buttonAddWater.style.opacity = 1;
+      buttonAddWater.style.cursor = 'pointer';
     }
   }
 
@@ -253,7 +226,7 @@ class CoffeeMachine {
         item.style.cursor = 'pointer';
       }
       this.on();  
-      //this.btnAddWaterOff(true);
+      this.btnAddWaterOff();
     };
   
     buttonOff.onclick = () => {
@@ -268,158 +241,157 @@ class CoffeeMachine {
       }
 
       infoMakingCoffee.innerHTML = '';
-      //this.btnAddWaterOff(false);
+      this.btnAddWaterOff();
     };
   }
 
-	makeCoffee() {
-		const typeCoffeeButtons = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
-		const water = this._element.querySelector('.coffeemachine-water__water');
-		const infoMakingCoffee = this._element.querySelector('.coffeemachine-preparation-coffee__message-done');
-		// const infoAddWater = this._element.querySelector ('.coffeemachine-water__volume-warning');
+  makeCoffee() {
+    const typeCoffeeButtons = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
+    const water = this._element.querySelector('.coffeemachine-water__water');
+    const infoMakingCoffee = this._element.querySelector('.coffeemachine-preparation-coffee__message-done');
+    // const infoAddWater = this._element.querySelector ('.coffeemachine-water__volume-warning');
 
-		if (!this.checkOn()) {
-		  console.log('РќРµ РјРѕР¶Р»РёРІРѕ Р·СЂРѕР±РёС‚Рё РєР°РІСѓ, РЅРµРјР°С” Р¶РёРІР»РµРЅРЅСЏ! Coffee Machine is OFF !!!');
-		  return this.checkOn();
-		}
+    if (!this.checkOn()) {
+      console.log('Не можливо зробити каву, немає живлення! Coffee Machine is OFF !!!');
+      return this.checkOn();
+    }
 
-		if (this.coffeeTypes.length === 0) {
-		  console.log(`РџРѕРјРёР»РєР°`);
-		  this.off();
-		  return;
-		} else {
-		  console.log(`РџР°СЂР°РјРµС‚СЂРё РєРЅРѕРїРѕРє РІРёР±РѕСЂСѓ РєР°РІРё`, this.coffeeTypes);
-		}
-
-		let localStorageWaterVolume = localStorage.getItem(this.id);
-
-		// РЇРєС‰Рѕ РґР°РЅС– РІС–РґСЃСѓС‚РЅС– Р°Р±Рѕ РЅРµРІС–СЂРЅС–, РІСЃС‚Р°РЅРѕРІР»СЋС”РјРѕ Р·РЅР°С‡РµРЅРЅСЏ Р·Р° Р·Р°РјРѕРІС‡СѓРІР°РЅРЅСЏРј
-		/*if (!localStorageWaterVolume || isNaN(parseFloat(localStorageWaterVolume))) {
-		  localStorageWaterVolume = this.localStorageWaterVolume;
-		}*/
-		if (localStorageWaterVolume != null) {
-		  console.log('localStorageWaterVolume: ', localStorageWaterVolume);
-		  water.style.height = localStorageWaterVolume + 'px';
-		} else {
-		  water.style.height = this.waterVolume * 200 + 'px';
-		  console.log(water.style.height);
-		}
-
-		function resultMakeCoffe() {
-		  const resultMakeCoffeText = 'Your coffee. Delicious!';
-		  infoMakingCoffee.innerHTML = resultMakeCoffeText;
-		}
-
-		function startCountdown(seconds, countdownElement) {
-		  let remainingTime = seconds;
-		
-		  function updateCountdown() {
-			const minutes = Math.floor(remainingTime / 60);
-			const seconds = remainingTime % 60;
-			countdownElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-		  }
-		
-		  const countdownInterval = setInterval(() => {
-			updateCountdown();
-			remainingTime--;
-		
-			if (remainingTime < 0) {
-			  clearInterval(countdownInterval);
-			  // Р¤СѓРЅРєС†С–СЏ РїС–СЃР»СЏ Р·Р°РІРµСЂС€РµРЅРЅСЏ РІС–РґР»С–РєСѓ
-			  resultMakeCoffe();
-			  return true;
-			}
-		  }, 1000);
-		
-		  // Р’РёРєР»РёРєР°Р№С‚Рµ updateCountdown РґР»СЏ РІС–РґРѕР±СЂР°Р¶РµРЅРЅСЏ С‡Р°СЃСѓ РЅР° РїРѕС‡Р°С‚РєСѓ
-		  updateCountdown();
-		}
+    if (this.coffeeTypes.length === 0) {
+      console.log(`Помилка`);
+      this.off();
+      return;
+    } else {
+      console.log(`Параметри кнопок вибору кави`, this.coffeeTypes);
+    }
     
-		const countdownElement = document.getElementById(this.id);
 
-		for (let button of typeCoffeeButtons) {
-			button.onclick = () => {
-				//this.btnAddWaterOff(false);
-				function blockBtn(state, buttonCoffeeL, buttonAddWaterL) {
-					//const buttonCoffee = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
-					for (let item of buttonCoffeeL) {
-						if (!state) {
-							item.disabled = true;
-							item.style.opacity = 0.5;
-							item.style.cursor = 'not-allowed';
-						} else {
-							item.disabled = false;
-							item.style.opacity = 1;
-							item.style.cursor = 'pointer';
-						}
-					}
-					if (!state) {
-						buttonAddWaterL.disabled = true;
-						buttonAddWaterL.style.opacity = 0.5;
-						buttonAddWaterL.style.cursor = 'not-allowed';
-					} else {
-						buttonAddWaterL.disabled = false;
-						buttonAddWaterL.style.opacity = 1;
-						buttonAddWaterL.style.cursor = 'pointer';
-					}
-				}
-				
-				const myFirstPromise = new Promise((resolve, reject) => {
-				  setTimeout(() => {
-					resolve(true);
-				  }, 8000);
-				});
-				
-				const lastWaterVolumeH = this.waterVolumeH - 100;
-				if (lastWaterVolumeH >= 100) {
-					water.style.height = `${ lastWaterVolumeH }px `;
-					if (localStorageWaterVolume >= lastWaterVolumeH) {
-						localStorage.setItem(`${ this.id }`, lastWaterVolumeH);
-						this.waterVolumeH = lastWaterVolumeH;
-					}
-					infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared.'
-					blockBtn(false, this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee'), this._element.querySelector('.coffeemachine-water__add-water'));
-					startCountdown(7, countdownElement);
-					myFirstPromise.then((successMessage) => {
-						blockBtn(successMessage, this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee'), this._element.querySelector('.coffeemachine-water__add-water'));;
-					});
-					if (lastWaterVolumeH == 100){
-						infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared. <br> The water is running out! Add water.';
-						const buttonCoffee = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
-						for (let item of buttonCoffee) {
-						  item.disabled = true;
-						  item.style.opacity = 0.5;
-						  item.style.cursor = 'not-allowed';
-						}
-					}
-				} else {
-					infoMakingCoffee.innerHTML = 'The water is running out! Add water.'
-					return;
-				}
-			
-				localStorageWaterVolume = localStorage.getItem(this.id);
-				console.log('localStorageWaterVolume: ', localStorageWaterVolume);
-			};
-		}
-	
-		const buttonAddWater = this._element.querySelector('.coffeemachine-water__add-water');
+    let localStorageWaterVolume = localStorage.getItem(this.id);
+
+    // Якщо дані відсутні або невірні, встановлюємо значення за замовчуванням
+    /*if (!localStorageWaterVolume || isNaN(parseFloat(localStorageWaterVolume))) {
+      localStorageWaterVolume = this.localStorageWaterVolume;
+    }*/
+    if (localStorageWaterVolume != null) {
+      console.log('localStorageWaterVolume: ', localStorageWaterVolume);
+      water.style.height = localStorageWaterVolume + 'px';
+    } else {
+      water.style.height = this.waterVolume * 200 + 'px';
+      console.log(water.style.height);
+    }
+
+    function resultMakeCoffe() {
+      const resultMakeCoffeText = 'Your coffee. Delicious!';
+      infoMakingCoffee.innerHTML = resultMakeCoffeText;
+    }
+
+    // function countdown(valueT, docElement) {
+    //   //const countBack = thiselem.querySelectorAll('${ this.id }');
+    //   const countBack = docElement;
+    //   // Визначаємо початкову дату і час.
+    //   const startDate = new Date();
+    //   startDate.setHours(0, 0, 0);
+    //   startDate.setSeconds(0);
+    //   // Визначаємо кінцеву дату і час.
+    //   const endDate = new Date();
+    //   endDate.setHours(0, 0, 0);
+    //   endDate.setSeconds(valueT);
+    //   //console.log("endDate", endDate);
+    //   // Розраховуємо різницю між початковою і кінцевою датами і часами.
+    //   let difference = endDate - startDate;
+    //   //const difference = valueT*1000;
+    //   console.log("difference", difference / 1000);
+    //   // Запуск циклу.
+    //   let interval = setInterval(() => {
+    //     // Зменшуємо різницю на одиницю.
+    //     difference -= 1000;
+    //     //countBack.innerHTML = '00:0'+(difference / 1000);
+    
+    //     // В кінці циклу виводимо повідомлення.
+    //     console.log(difference / 1000);
+    //     console.log(countBack);
+    //     // Якщо різниця дорівнює 0, то зупиняємо цикл.
+    //     if (difference <= 0) {
+    //       clearInterval(interval);
+    //       resultMakeCoffe();
+    //       console.log("Час вичерпався!");
+    //     }
+    //   }, 1000);
+    // }
+
+    function startCountdown(seconds, countdownElement) {
+      let remainingTime = seconds;
+    
+      function updateCountdown() {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        countdownElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      }
+    
+      const countdownInterval = setInterval(() => {
+        updateCountdown();
+        remainingTime--;
+    
+        if (remainingTime < 0) {
+          clearInterval(countdownInterval);
+          // Функція після завершення відліку
+          resultMakeCoffe();
+        }
+      }, 1000);
+    
+      // Викликайте updateCountdown для відображення часу на початку
+      updateCountdown();
+    }
+    
+    const countdownElement = document.getElementById(this.id);
+
+    for (let button of typeCoffeeButtons) {
+      button.addEventListener('click', () => {
+        let lastWaterVolumeH = this.waterVolumeH - 100;
+        if (lastWaterVolumeH >= 100) {
+          water.style.height = `${ lastWaterVolumeH }px `;
+          if (localStorageWaterVolume >= lastWaterVolumeH) {
+            localStorage.setItem(`${ this.id }`, lastWaterVolumeH);
+            this.waterVolumeH = lastWaterVolumeH;
+          }
+          infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared.'
+          startCountdown(7, countdownElement);
+          //setTimeout(resultMakeCoffe, 7000);
+          if (lastWaterVolumeH == 100){
+          infoMakingCoffee.innerHTML = 'Wait please. <br> Coffee is being prepared. <br> The water is running out! Add water.';
+            const buttonCoffee = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
+            for (let item of buttonCoffee) {
+              item.disabled = true;
+              item.style.opacity = 0.5;
+              item.style.cursor = 'not-allowed';
+            }
+          }
+        } else {
+            infoMakingCoffee.innerHTML = 'The water is running out! Add water.'
+            return;
+        }
+        
+        const buttonAddWater = this._element.querySelector('.coffeemachine-water__add-water');
 
         buttonAddWater.onclick = () => {
-			const buttonCoffee = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
-			water.style.height = this.waterVolume * 200 + 'px';
-			localStorage.setItem(`${ this.id }`, this.waterVolume * 200);
-			this.waterVolumeH = this.waterVolume * 200;
+          const buttonCoffee = this._element.querySelectorAll('.coffeemachine-selection-coffee__type-coffee');
+          water.style.height = this.waterVolume * 200 + 'px';
+          localStorage.setItem(`${ this.id }`, this.waterVolume * 200);
+          this.waterVolumeH = this.waterVolume * 200;
 
-			for (let item of buttonCoffee) {
-				item.disabled = false;
-				item.style.opacity = 1;
-				item.style.cursor = 'pointer';
-			}
+          for (let item of buttonCoffee) {
+            item.disabled = false;
+            item.style.opacity = 1;
+            item.style.cursor = 'pointer';
+          }
 
-			infoMakingCoffee.innerHTML = '';
-			localStorageWaterVolume = localStorage.getItem(this.id);
-        };
-	}
+          infoMakingCoffee.innerHTML = '';
+          localStorageWaterVolume = localStorage.getItem(this.id);
+        }
+        localStorageWaterVolume = localStorage.getItem(this.id);
+        console.log('localStorageWaterVolume: ', localStorageWaterVolume);
+      });
+    }
+  }
 }
 
 const coffeeMach1 = new CoffeeMachine('Philips', ['Espresso', 'Double Espresso', 'Macchiato', 'Latte', 'Americano'], 3);
