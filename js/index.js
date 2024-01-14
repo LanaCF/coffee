@@ -160,6 +160,7 @@ class CoffeeMachine {
     this.buttonOnOff();
     this.makeCoffee();
     this.btnAddWaterOff();
+    this.statusEkrana();
   }
 
   renderTypeCoffee() {
@@ -181,11 +182,14 @@ class CoffeeMachine {
   on() {
     this._on = true;
     console.log('-= ON =-');
-	this.btnAddWaterOff(true);   
-	if (this.countStart >= 0) {
-		this.makeCoffee();
-		this.countStart++;
-	}
+	  this.btnAddWaterOff(true);  
+
+    if (this.countStart >= 0) {
+      this.makeCoffee();
+      this.countStart++;
+    }
+
+    this.statusEkrana();
   }
 
   off() {
@@ -195,6 +199,7 @@ class CoffeeMachine {
     const buttonTextOff = this._element.querySelector('.coffeemachine-button__info-on-off_text');
     buttonTextOff.innerHTML = 'Machine OFF';
     buttonTextOff.style.color = 'red';
+    this.statusEkrana();
     console.log('-= OFF =-');
   }
 
@@ -214,6 +219,15 @@ class CoffeeMachine {
 	} else {
 		return true;
 	}
+  }
+
+  statusEkrana() {
+    const contextEkran = this._element.querySelector('.coffeemachine-preparation-coffee__countdown');
+    if (!this._on) {
+      contextEkran.innerHTML = '';
+    } else {
+      contextEkran.innerHTML = '0:00';
+    }
   }
 
   btnAddWaterOff(state) {
